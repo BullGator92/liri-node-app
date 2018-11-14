@@ -5,6 +5,7 @@ var Spotify = require('node-spotify-api');
 // var cTable = require('console.table');
 var request = require('request');
 var moment = require('moment');
+var fs = require("fs");
 
 var spotify = new Spotify({
     id: keys.spotify.id,
@@ -39,8 +40,8 @@ if (process.argv[2] == 'concert-this') {
 
     var songName = process.argv.slice(3).join(" ");
 
-    if (songName == undefined) {
-        songName = "The sign by Ace of Base";
+    if (!songName) {
+        songName = "The Sign";
     }
 
     spotify.search({ type: 'track', query: songName, limit: 10 }, function (err, data) {
@@ -71,13 +72,15 @@ if (process.argv[2] == 'concert-this') {
 
     // If no song is provided then your program will default to "The Sign" by Ace of Base.
 } else if (process.argv[2] == 'movie-this') {
-    var movieName = process.argv.slice[3].join(" ");
+    var movieName = process.argv.slice(3).join(" ");
 
-    if (movieName == undefined) {
+    if (!movieName) {
         movieName = "Mr. Nobody";
     }
 
-    request('http://www.omdbapi.com/?i=tt3896198&apikey=4ba2b104' + process.argv[3], function (error, response, body) {
+    request("https://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
+
+        
 
         var result = JSON.parse(body);
         console.log("Title :" + result.Title);
@@ -88,12 +91,31 @@ if (process.argv[2] == 'concert-this') {
         console.log("Language :" + result.Language);
         console.log("Movie Plot :" + result.Plot);
         console.log("Actors :" + result.Actors);
-
     });
 
 } else if (process.argv[2] == 'do-what-it-says') {
-    console.log('do what it says')
+
+    fs.readFile("random.txt", "utf8", function(error, data) {
+    
+        // If the code experiences any errors it will log the error to the console.
+        if (error) {
+          return console.log(error);
+        }
+      
+        // We will then print the contents of data
+        console.log(data);
+      
+        // Then split it by commas (to make it more readable)
+        var dataArr = data.split(",");
+      
+        // We will then re-display the content as an array for later use.
+        console.log(dataArr);
+
+    // console.log('do what it says')
 }
+
+  
+  });
 
 //  spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
 //     if (err) {
