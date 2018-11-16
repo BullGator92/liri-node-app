@@ -25,11 +25,11 @@ if (process.argv[2] == 'concert-this') {
         // console.log(response);
         // console.log(body);
         // console.log(result);
-        for (var i = 0; i<result.length; i++) {
+        for (var i = 0; i < result.length; i++) {
 
-        console.log("Venue name " + result[i].venue.name);
-        console.log("Venue location " + result[i].venue.city);
-        console.log("Date of Event " + moment(result[i].datetime).format("MM/DD/YYYY"));
+            console.log("Venue name " + result[i].venue.name);
+            console.log("Venue location " + result[i].venue.city);
+            console.log("Date of Event " + moment(result[i].datetime).format("MM/DD/YYYY"));
         }
     });
 
@@ -49,16 +49,16 @@ if (process.argv[2] == 'concert-this') {
             return console.log('Error occurred: ' + err);
         }
 
-    // console.log(data.tracks);
-    for (var i = 0; i < data.tracks.items.length; i++) {
-        // var result = {
+        // console.log(data.tracks);
+        for (var i = 0; i < data.tracks.items.length; i++) {
+            // var result = {
             console.log('artist: ' + data.tracks.items[i].album.artists[0].name,
-            'album_name: ' + data.tracks.items[i].album.name,
-            'song_name: ' + data.tracks.items[i].name,
-            'preview_url: ' + data.tracks.items[i].preview_url);
-        // }
-        // tableArray.push(result);
-    }
+                'album_name: ' + data.tracks.items[i].album.name,
+                'song_name: ' + data.tracks.items[i].name,
+                'preview_url: ' + data.tracks.items[i].preview_url);
+            // }
+            // tableArray.push(result);
+        }
     });
 
     // var tableArray = [];
@@ -80,7 +80,7 @@ if (process.argv[2] == 'concert-this') {
 
     request("https://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
 
-        
+
 
         var result = JSON.parse(body);
         console.log("Title :" + result.Title);
@@ -95,27 +95,31 @@ if (process.argv[2] == 'concert-this') {
 
 } else if (process.argv[2] == 'do-what-it-says') {
 
-    fs.readFile("random.txt", "utf8", function(error, data) {
-    
+    fs.readFile("random.txt", "utf8", function (error, data) {
+
         // If the code experiences any errors it will log the error to the console.
         if (error) {
-          return console.log(error);
+            return console.log(error);
         }
-      
+
         // We will then print the contents of data
         console.log(data);
-      
+
         // Then split it by commas (to make it more readable)
         var dataArr = data.split(",");
-      
+
+        if (dataArr.length == 2) {
+            pick(dataArr[0], dataArr[1]);
+        } else if (dataArr.length == 1) {
+            pick(dataArr[0]);
+        }
+
         // We will then re-display the content as an array for later use.
-        console.log(dataArr);
+        // console.log(dataArr);
 
-    // console.log('do what it says')
-}
-
-  
-  });
+        // console.log('do what it says')
+    });
+  };
 
 //  spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
 //     if (err) {
