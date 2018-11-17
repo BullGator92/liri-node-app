@@ -1,4 +1,5 @@
 require("dotenv").config();
+var pick = require('object.pick');
 var keys = require('./keys');
 var Spotify = require('node-spotify-api');
 //added to format table 
@@ -6,6 +7,7 @@ var Spotify = require('node-spotify-api');
 var request = require('request');
 var moment = require('moment');
 var fs = require("fs");
+
 
 var spotify = new Spotify({
     id: keys.spotify.id,
@@ -27,9 +29,9 @@ if (process.argv[2] == 'concert-this') {
         // console.log(result);
         for (var i = 0; i < result.length; i++) {
 
-            console.log("Venue name " + result[i].venue.name);
-            console.log("Venue location " + result[i].venue.city);
-            console.log("Date of Event " + moment(result[i].datetime).format("MM/DD/YYYY"));
+            console.log("Venue name: " + result[i].venue.name);
+            console.log("Venue location: " + result[i].venue.city);
+            console.log("Date of Event: " + moment(result[i].datetime).format("MM/DD/YYYY"));
         }
     });
 
@@ -40,6 +42,8 @@ if (process.argv[2] == 'concert-this') {
 
     var songName = process.argv.slice(3).join(" ");
 
+    spotifyThisSong(songName);
+    console.log('-----------------------------------------------------------');
     if (!songName) {
         songName = "The Sign";
     }
@@ -52,10 +56,10 @@ if (process.argv[2] == 'concert-this') {
         // console.log(data.tracks);
         for (var i = 0; i < data.tracks.items.length; i++) {
             // var result = {
-            console.log('artist: ' + data.tracks.items[i].album.artists[0].name,
-                'album_name: ' + data.tracks.items[i].album.name,
-                'song_name: ' + data.tracks.items[i].name,
-                'preview_url: ' + data.tracks.items[i].preview_url);
+            console.log('artist: ' + data.tracks.items[i].album.artists[0].name + '\n', 
+                'album_name: ' + data.tracks.items[i].album.name + '\n',
+                'song_name: ' + data.tracks.items[i].name + '\n',
+                'preview_url: ' + data.tracks.items[i].preview_url + '\n');
             // }
             // tableArray.push(result);
         }
@@ -105,19 +109,48 @@ if (process.argv[2] == 'concert-this') {
         // We will then print the contents of data
         console.log(data);
 
+        pick({a: 'a', b: 'b'}, 'a')
+    //=> {a: 'a'}
+
         // Then split it by commas (to make it more readable)
         var dataArr = data.split(",");
 
         if (dataArr.length == 2) {
-            pick(dataArr[0], dataArr[1]);
+            pick(dataArr,[dataArr[0], dataArr[1]]);
         } else if (dataArr.length == 1) {
-            pick(dataArr[0]);
+            pick(dataArr,dataArr[0]);
         }
 
         // We will then re-display the content as an array for later use.
-        // console.log(dataArr);
+        console.log(dataArr);
 
         // console.log('do what it says')
+    });
+  };
+
+  function spotifyThisSong (songName) {
+    // var songName = process.argv.slice(3).join(" ");
+
+    if (!songName) {
+        songName = "The Sign";
+    }
+    console.log(songName);
+
+    spotify.search({ type: 'track', query: songName, limit: 10 }, function (err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
+        
+        // console.log(data.tracks);
+        for (var i = 0; i < data.tracks.items.length; i++) {
+            // var result = {
+            console.log('artist: ' + data.tracks.items[i].album.artists[0].name,
+                'album_name: ' + data.tracks.items[i].album.name,
+                'song_name: ' + data.tracks.items[i].name,
+                'preview_url: ' + data.tracks.items[i].preview_url);
+            // }
+            // tableArray.push(result);
+        }
     });
   };
 
